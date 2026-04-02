@@ -1,0 +1,52 @@
+version: "3.8"
+services:
+  broker:
+    image: docker.io/library/redis:7
+    restart: always
+    volumes:
+      - ./redisdata:/data
+
+  db:
+    image: docker.io/library/postgres:16
+    restart: always
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: <PAPERLESS_POSTGRES_DATABASE_NAME>
+      POSTGRES_USER: <PAPERLESS_POSTGRES_USER_NAME>
+      POSTGRES_PASSWORD: <PAPERLESS_POSTGRES_PASSWORD>
+
+  webserver:
+    image: ghcr.io/paperless-ngx/paperless-ngx:latest
+    restart: always
+    depends_on:
+      - db
+      - broker
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/usr/src/paperless/data
+      - ./media:/usr/src/paperless/media
+      - ./export:/usr/src/paperless/export
+      - ./consume:/usr/src/paperless/consume
+    environment:
+      PAPERLESS_REDIS: redis://broker:6379
+      PAPERLESS_DBHOST: db
+      PAPERLESS_DBUSER: <PAPERLESS_POSTGRES_USER_NAME>
+      PAPERLESS_DBPASS: <PAPERLESS_POSTGRES_PASSWORD>
+      PAPERLESS_OCR_LANGUAGE: deu+eng
+      PAPERLESS_TIME_ZONE: Europe/Berlin
+      PAPERLESS_CONSUMER_POLLING: 10
+
+  ftp:
+    image: docker.io/delfer/alpine-ftp-server
+    restart: always
+    ports:
+      - "0.0.0.0:2121:21"
+      - "0.0.0.0:21000-21010:21000-21010"
+    volumes:
+      - ./consume:/ftp/scanner
+    environment:
+      USERS: "<FTP_USER_NAME>|<FTP_PASSWORD>"
+      MIN_PORT: 21000
+      MAX_PORT: 21010
