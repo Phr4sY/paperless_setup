@@ -1,4 +1,4 @@
-# Paperless-ngx Project with FTP and OneDrive Automation
+# Paperless-Ngx Project with Ftp and OneDrive Automation
 
 This repository contains the configuration for a self-hosted Paperless-ngx instance, an integrated FTP server for document ingestion, and a specialized Bash script for automated cloud backups and snapshots.
 
@@ -6,7 +6,7 @@ This repository contains the configuration for a self-hosted Paperless-ngx insta
 
 ## Service Architecture
 
-### Paperless-ngx Stack
+### Paperless-Ngx Stack
 
 - **Image**: ghcr.io/paperless-ngx/paperless-ngx:latest
 - **Database**: PostgreSQL 16 (stored in `./pgdata`)
@@ -32,7 +32,7 @@ This repository contains the configuration for a self-hosted Paperless-ngx insta
 
 ## Backup and Maintenance Script
 
-The backup utility (`backup_script.sh`) manages the full lifecycle of your data.
+The backup utility (`backup.sh`) manages the full lifecycle of your data.
 
 ### Configuration Defaults
 
@@ -59,11 +59,10 @@ The backup utility (`backup_script.sh`) manages the full lifecycle of your data.
 
 ### 1. Credentials
 
-Replace the following variables in `docker-compose.yml` before starting:
+Credentials are read from a `.env` file in the project root (kept out of git). Create it and fill in your own values:
 
-- `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`
-- `PAPERLESS_DBUSER`, `PAPERLESS_DBPASS`
-- `USERS` (FTP login in format "user|password")
+- `PAPERLESS_POSTGRES_DATABASE_NAME`, `PAPERLESS_POSTGRES_USER_NAME`, `PAPERLESS_POSTGRES_PASSWORD` — used by both the Postgres container and Paperless.
+- `FTP_USERS` — FTP login in the format `user|password`.
 
 ### 2. Path Setup
 

@@ -1,0 +1,9 @@
+.env
+
+# Local data directories
+pgdata/
+redisdata/
+data/
+media/
+export/
+consume/

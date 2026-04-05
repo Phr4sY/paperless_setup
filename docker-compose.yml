@@ -1,4 +1,4 @@
-version: "3.8"
+---
 services:
   broker:
     image: docker.io/library/redis:7
@@ -12,9 +12,9 @@ services:
     volumes:
       - ./pgdata:/var/lib/postgresql/data
     environment:
-      POSTGRES_DB: <PAPERLESS_POSTGRES_DATABASE_NAME>
-      POSTGRES_USER: <PAPERLESS_POSTGRES_USER_NAME>
-      POSTGRES_PASSWORD: <PAPERLESS_POSTGRES_PASSWORD>
+      POSTGRES_DB: ${PAPERLESS_POSTGRES_DATABASE_NAME}
+      POSTGRES_USER: ${PAPERLESS_POSTGRES_USER_NAME}
+      POSTGRES_PASSWORD: ${PAPERLESS_POSTGRES_PASSWORD}
 
   webserver:
     image: ghcr.io/paperless-ngx/paperless-ngx:latest
@@ -32,8 +32,9 @@ services:
     environment:
       PAPERLESS_REDIS: redis://broker:6379
       PAPERLESS_DBHOST: db
-      PAPERLESS_DBUSER: <PAPERLESS_POSTGRES_USER_NAME>
-      PAPERLESS_DBPASS: <PAPERLESS_POSTGRES_PASSWORD>
+      PAPERLESS_DBNAME: ${PAPERLESS_POSTGRES_DATABASE_NAME}
+      PAPERLESS_DBUSER: ${PAPERLESS_POSTGRES_USER_NAME}
+      PAPERLESS_DBPASS: ${PAPERLESS_POSTGRES_PASSWORD}
       PAPERLESS_OCR_LANGUAGE: deu+eng
       PAPERLESS_TIME_ZONE: Europe/Berlin
       PAPERLESS_CONSUMER_POLLING: 10
@@ -47,6 +48,6 @@ services:
     volumes:
       - ./consume:/ftp/scanner
     environment:
-      USERS: "<FTP_USER_NAME>|<FTP_PASSWORD>"
+      USERS: ${FTP_USERS}
       MIN_PORT: 21000
       MAX_PORT: 21010
